@@ -7,6 +7,7 @@
 <title>Parcel Tracking | Shipment Status</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -42,7 +43,9 @@ body{
     font-size:13px;
 }
 
-.demo-badge{
+/* TRACKING BADGE */
+
+.real-badge{
     display:inline-block;
     margin-top:13px;
     padding:6px 12px;
@@ -51,6 +54,7 @@ body{
     border:1px solid rgba(255,255,255,.2);
     font-size:11px;
     font-weight:700;
+    letter-spacing:.5px;
 }
 
 .container{
@@ -111,6 +115,10 @@ body{
     font-size:14px;
     font-weight:700;
     cursor:pointer;
+}
+
+.search-box button:hover{
+    background:#1d4ed8;
 }
 
 .hint{
@@ -269,6 +277,7 @@ body{
     font-size:25px;
     color:#1d4ed8;
     font-weight:900;
+    margin-top:5px;
 }
 
 .delivery-time{
@@ -282,6 +291,8 @@ body{
     font-size:13px;
     margin-top:8px;
 }
+
+/* TIMELINE */
 
 .timeline{
     position:relative;
@@ -300,19 +311,68 @@ body{
 
 .dot-wrap{
     position:relative;
-    width:18px;
+    width:20px;
     flex-shrink:0;
 }
+
+/* COMMON DOT */
 
 .dot{
     width:17px;
     height:17px;
     border-radius:50%;
-    background:#2563eb;
-    border:4px solid #dbeafe;
     position:relative;
     z-index:2;
 }
+
+/* GREEN COMPLETED CIRCLES */
+
+.dot.completed{
+    background:#22c55e;
+    border:4px solid #bbf7d0;
+}
+
+/* ACTIVE IN TRANSIT */
+
+.dot.active{
+    background:#22c55e;
+    border:4px solid #bbf7d0;
+
+    animation:slowBlink 2.2s ease-in-out infinite;
+}
+
+/* SLOW BLINK */
+
+@keyframes slowBlink{
+
+    0%{
+        transform:scale(1);
+        opacity:1;
+        box-shadow:0 0 0 0 rgba(34,197,94,.45);
+    }
+
+    50%{
+        transform:scale(1.12);
+        opacity:.65;
+        box-shadow:0 0 0 8px rgba(34,197,94,.10);
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+        box-shadow:0 0 0 0 rgba(34,197,94,0);
+    }
+
+}
+
+/* GREY UPCOMING CIRCLES */
+
+.dot.pending{
+    background:#e5e7eb;
+    border:4px solid #d1d5db;
+}
+
+/* NORMAL TIMELINE LINE */
 
 .event:not(:last-child) .dot-wrap::after{
     content:"";
@@ -321,7 +381,19 @@ body{
     left:7px;
     width:2px;
     height:calc(100% + 10px);
-    background:#dbe4f0;
+    background:#d1d5db;
+}
+
+/* GREEN LINE AFTER COMPLETED EVENTS */
+
+.event.green-line:not(:last-child) .dot-wrap::after{
+    background:#22c55e;
+}
+
+/* ACTIVE EVENT TEXT */
+
+.active-event .event-title{
+    color:#15803d;
 }
 
 .event-title{
@@ -389,29 +461,39 @@ body{
     .delivery-date{
         font-size:22px;
     }
+
 }
+
 </style>
 </head>
 
 <body>
 
 <header class="header">
+
     <div class="header-inner">
 
-        <div class="brand">📦 Parcel Tracking</div>
+        <div class="brand">
+            📦 Parcel Tracking
+        </div>
 
         <div class="subtitle">
             Shipment status & delivery information
         </div>
 
         <div class="real-badge">
-           TRACKING INTERFACE
+            TRACKING INTERFACE
         </div>
 
     </div>
+
 </header>
 
+
 <main class="container">
+
+
+    <!-- SEARCH -->
 
     <div class="search-card">
 
@@ -439,30 +521,55 @@ body{
         </div>
 
         <div class="hint">
-            Example: TGX784215 or TGX937782
+            Example: TGX784015 or TGX986482
         </div>
 
     </div>
 
+
+    <!-- ERROR -->
+
     <div id="error" class="error hidden">
-        Tracking ID not found. Please check your Tracking ID.
+
+        Tracking ID not found.
+        Please check your Tracking ID.
+
     </div>
+
+
+    <!-- RESULT -->
 
     <section id="result" class="result hidden">
 
+
+        <!-- NOTICE -->
+
         <div class="notice">
-            ℹ️ <b>Information:</b> This is a shipment-tracking
-            interface. Delivery information shown is for Real-world
-            purposes.
+
+            ℹ️ <b>Information:</b>
+            This is a shipment-tracking interface.
+            Delivery information shown is for Traking purposes.
+
         </div>
+
+
+        <!-- ORDER SUMMARY -->
 
         <div class="card">
 
             <div class="order-top">
 
                 <div>
-                    <div class="label">Tracking ID</div>
-                    <div class="order-id" id="trackingId"></div>
+
+                    <div class="label">
+                        Tracking ID
+                    </div>
+
+                    <div
+                        class="order-id"
+                        id="trackingId">
+                    </div>
+
                 </div>
 
                 <div class="status">
@@ -471,41 +578,98 @@ body{
 
             </div>
 
+
             <div class="grid">
 
                 <div class="info">
-                    <div class="label">Customer</div>
-                    <div class="value" id="customer"></div>
+
+                    <div class="label">
+                        Customer
+                    </div>
+
+                    <div
+                        class="value"
+                        id="customer">
+                    </div>
+
                 </div>
 
-                <div class="info">
-                    <div class="label">Mobile Number</div>
-                    <div class="value" id="mobile"></div>
-                </div>
 
                 <div class="info">
-                    <div class="label">City</div>
-                    <div class="value" id="city"></div>
+
+                    <div class="label">
+                        Mobile Number
+                    </div>
+
+                    <div
+                        class="value"
+                        id="mobile">
+                    </div>
+
                 </div>
 
-                <div class="info">
-                    <div class="label">State</div>
-                    <div class="value" id="state"></div>
-                </div>
 
                 <div class="info">
-                    <div class="label">PIN Code</div>
-                    <div class="value" id="pin"></div>
+
+                    <div class="label">
+                        City
+                    </div>
+
+                    <div
+                        class="value"
+                        id="city">
+                    </div>
+
                 </div>
 
+
                 <div class="info">
-                    <div class="label">Country</div>
-                    <div class="value" id="country"></div>
+
+                    <div class="label">
+                        State
+                    </div>
+
+                    <div
+                        class="value"
+                        id="state">
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        PIN Code
+                    </div>
+
+                    <div
+                        class="value"
+                        id="pin">
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="label">
+                        Country
+                    </div>
+
+                    <div
+                        class="value"
+                        id="country">
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
+
+
+        <!-- DELIVERY ADDRESS -->
 
         <div class="card">
 
@@ -515,13 +679,22 @@ body{
 
             <div class="location">
 
-                <div class="location-name" id="addressName"></div>
+                <div
+                    class="location-name"
+                    id="addressName">
+                </div>
 
-                <div class="location-text" id="address"></div>
+                <div
+                    class="location-text"
+                    id="address">
+                </div>
 
             </div>
 
         </div>
+
+
+        <!-- ROUTE -->
 
         <div class="card">
 
@@ -532,22 +705,42 @@ body{
             <div class="route">
 
                 <div class="route-box">
-                    <div class="route-title">Origin</div>
+
+                    <div class="route-title">
+                        Origin
+                    </div>
+
                     <div class="route-place">
                         Merchant Dispatch Centre
                     </div>
+
                 </div>
 
-                <div class="route-arrow">→</div>
+
+                <div class="route-arrow">
+                    →
+                </div>
+
 
                 <div class="route-box">
-                    <div class="route-title">PARCEL TRACKING</div>
-                    <div class="route-place" id="destination"></div>
+
+                    <div class="route-title">
+                        PARCEL TRACKING
+                    </div>
+
+                    <div
+                        class="route-place"
+                        id="Realstic">
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
+
+
+        <!-- CURRENT STATUS -->
 
         <div class="card">
 
@@ -563,12 +756,15 @@ body{
 
                 <div class="location-text">
                     The shipment is shown as moving toward the
-                    registered destination.
+                    registered Real World .
                 </div>
 
             </div>
 
         </div>
+
+
+        <!-- EXPECTED DELIVERY -->
 
         <div class="card delivery">
 
@@ -590,190 +786,363 @@ body{
 
         </div>
 
+
+        <!-- SHIPMENT JOURNEY -->
+
         <div class="card">
 
             <div class="card-title">
                 📦 Shipment Journey
             </div>
 
+
             <div class="timeline">
 
-                <div class="event">
+
+                <!-- ORDER BOOKED -->
+
+                <div class="event green-line">
+
                     <div class="dot-wrap">
-                        <div class="dot"></div>
+
+                        <div class="dot completed"></div>
+
                     </div>
+
                     <div>
-                        <div class="event-title">Order Booked</div>
+
+                        <div class="event-title">
+                            Order Booked
+                        </div>
+
                         <div class="event-text">
                             Order information has been registered.
                         </div>
+
                     </div>
+
                 </div>
 
-                <div class="event">
+
+                <!-- SHIPMENT DISPATCHED -->
+
+                <div class="event green-line">
+
                     <div class="dot-wrap">
-                        <div class="dot"></div>
+
+                        <div class="dot completed"></div>
+
                     </div>
+
                     <div>
-                        <div class="event-title">Shipment Dispatched</div>
+
+                        <div class="event-title">
+                            Shipment Dispatched
+                        </div>
+
                         <div class="event-text">
                             Parcel has been marked as dispatched.
                         </div>
+
                     </div>
+
                 </div>
 
-                <div class="event">
+
+                <!-- IN TRANSIT -->
+
+                <div class="event active-event">
+
                     <div class="dot-wrap">
-                        <div class="dot"></div>
+
+                        <div class="dot active"></div>
+
                     </div>
+
                     <div>
-                        <div class="event-title">In Transit</div>
-                        <div class="event-text">
-                            Shipment is currently moving toward the destination.
+
+                        <div class="event-title">
+                            In Transit
                         </div>
+
+                        <div class="event-text">
+                            Shipment is currently moving toward the Real.
+                        </div>
+
                     </div>
+
                 </div>
 
+
+                <!-- ARRIVING SOON -->
+
                 <div class="event">
+
                     <div class="dot-wrap">
-                        <div class="dot"></div>
+
+                        <div class="dot pending"></div>
+
                     </div>
+
                     <div>
-                        <div class="event-title">Arriving Soon</div>
+
+                        <div class="event-title">
+                            Arriving Soon
+                        </div>
+
                         <div class="event-text">
                             Shipment is expected within the scheduled
                             delivery window.
                         </div>
+
                     </div>
+
                 </div>
 
+
+                <!-- HOME DELIVERY -->
+
                 <div class="event">
+
                     <div class="dot-wrap">
-                        <div class="dot"></div>
+
+                        <div class="dot pending"></div>
+
                     </div>
+
                     <div>
-                        <div class="event-title">Expected Home Delivery</div>
+
+                        <div class="event-title">
+                            Expected Home Delivery
+                        </div>
+
                         <div class="event-text">
                             Expected on 3 November 2026 at 1:00 PM.
                         </div>
+
                     </div>
+
                 </div>
+
 
             </div>
 
         </div>
 
+
     </section>
 
 </main>
 
+
 <footer class="footer">
+
     Parcel Tracking Interface
+
     <br>
+
     Real-world information only
+
 </footer>
+
 
 <script>
 
+
+/* ============================
+   ORDER DATABASE
+============================ */
+
 const orders = {
 
+
+    /* FIRST CLIENT */
+
     "TGX784215": {
+
         customer: "shaik.Manishabi",
+
         mobile: "Not provided",
+
         city: "Perungalathur, Chennai",
+
         state: "Tamil Nadu",
+
         pin: "600063",
+
         country: "India",
+
         addressName: "shaik.Manishabi",
+
         address:
-        "No 2, Ruchi Grand Ladies Hostel,<br>" +
-        "Nethaji Street, Kamaraj Nagar,<br>" +
-        "Near Perungalathur Bus Stop,<br>" +
-        "Perungalathur, Chennai, Tamil Nadu - 600063",
-        destination: "Perungalathur, Chennai"
+            "No 2, Ruchi Grand Ladies Hostel,<br>" +
+            "Nethaji Street, Kamaraj Nagar,<br>" +
+            "Near Perungalathur Bus Stop,<br>" +
+            "Perungalathur, Chennai, Tamil Nadu - 600063",
+
+        destination:
+            "Perungalathur, Chennai"
+
     },
 
+
+    /* PUSHpanjali */
+
     "TGX936482": {
+
         customer: "Pushpanjali",
+
         mobile: "8290892965",
+
         city: "Chennai",
+
         state: "Tamil Nadu",
+
         pin: "600097",
+
         country: "India",
+
         addressName: "Pushpanjali",
+
         address:
-        "Shri Jaylaxmi Ladies PG,<br>" +
-        "7th MCN Street, Vinay Nagar,<br>" +
-        "Thoraipakkam, Chennai,<br>" +
-        "Tamil Nadu - 600097, India",
-        destination: "Thoraipakkam, Chennai"
+            "Shri Jaylaxmi Ladies PG,<br>" +
+            "7th MCN Street, Vinay Nagar,<br>" +
+            "Thoraipakkam, Chennai,<br>" +
+            "Tamil Nadu - 600097, India",
+
+        destination:
+            "Thoraipakkam, Chennai"
+
     }
 
 };
 
+
+/* ============================
+   TRACK ORDER
+============================ */
+
 function trackOrder(){
 
-    const input = document
+    const input =
+        document
         .getElementById("orderInput")
         .value
         .trim()
         .toUpperCase();
 
-    const result = document.getElementById("result");
-    const error = document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+
+    const error =
+        document.getElementById("error");
+
 
     if(orders[input]){
 
-        const order = orders[input];
+        const order =
+            orders[input];
 
-        document.getElementById("trackingId").textContent = input;
-        document.getElementById("customer").textContent = order.customer;
-        document.getElementById("mobile").textContent = order.mobile;
-        document.getElementById("city").textContent = order.city;
-        document.getElementById("state").textContent = order.state;
-        document.getElementById("pin").textContent = order.pin;
-        document.getElementById("country").textContent = order.country;
 
-        document.getElementById("addressName").textContent =
-            order.addressName;
+        document
+        .getElementById("trackingId")
+        .textContent = input;
 
-        document.getElementById("address").innerHTML =
-            order.address;
 
-        document.getElementById("destination").textContent =
-            order.destination;
+        document
+        .getElementById("customer")
+        .textContent = order.customer;
+
+
+        document
+        .getElementById("mobile")
+        .textContent = order.mobile;
+
+
+        document
+        .getElementById("city")
+        .textContent = order.city;
+
+
+        document
+        .getElementById("state")
+        .textContent = order.state;
+
+
+        document
+        .getElementById("pin")
+        .textContent = order.pin;
+
+
+        document
+        .getElementById("country")
+        .textContent = order.country;
+
+
+        document
+        .getElementById("addressName")
+        .textContent = order.addressName;
+
+
+        document
+        .getElementById("address")
+        .innerHTML = order.address;
+
+
+        document
+        .getElementById("destination")
+        .textContent = order.destination;
+
 
         error.classList.add("hidden");
+
         result.classList.remove("hidden");
+
 
         setTimeout(function(){
 
             result.scrollIntoView({
+
                 behavior:"smooth",
+
                 block:"start"
+
             });
 
         },100);
 
+
     }else{
 
         result.classList.add("hidden");
+
         error.classList.remove("hidden");
 
     }
+
 }
+
+
+/* ENTER KEY */
 
 document
 .getElementById("orderInput")
-.addEventListener("keydown", function(e){
+.addEventListener(
+    "keydown",
+    function(e){
 
-    if(e.key === "Enter"){
-        trackOrder();
+        if(e.key === "Enter"){
+
+            trackOrder();
+
+        }
+
     }
-
-});
+);
 
 </script>
 
 </body>
-  </html>
+    </html>
